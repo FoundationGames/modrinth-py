@@ -1,2 +1,2 @@
 # modrinth.py
-A Modrinth API wrapper in Python
+A (WORK IN PROGRESS) Modrinth API wrapper in Python
