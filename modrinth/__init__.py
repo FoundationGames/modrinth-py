@@ -8,6 +8,7 @@ from .search import SearchResults
 from .structs import User
 from .structs import Mod
 from .structs import Version
+from .structs import Team
 
 from . import common
 from .common import api_prefix
@@ -23,3 +24,7 @@ def get_mod(id : str) -> Mod:
 def get_version(id : str) -> Version:
     response = requests.get(api_prefix+"api/v1/version/"+id)
     return Version(common.to_json(response))
+
+def get_team(id : str) -> Team:
+    response = requests.get(api_prefix+"api/v1/team/"+id+"/members")
+    return Team(common.to_json(response))

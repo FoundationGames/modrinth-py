@@ -40,6 +40,9 @@ class Mod:
     def team(self) -> str: return self.__data["team"]
 
     @property
+    def title(self) -> str: return self.__data["title"]
+
+    @property
     def description(self) -> str: return self.__data["description"]
 
     @property
@@ -141,3 +144,20 @@ class Version:
 
     @property
     def loaders(self) -> list: return self.__data["loaders"]
+
+
+
+class Team:
+    def __init__(self, data : dict):
+        self.__data = data
+
+    @property
+    def team_id(self) -> list:
+        return self.__data
+
+    @property
+    def user_id(self) -> list:
+        team_id = []
+        for i in range(len(self.__data)):
+            team_id.append(self.__data[i]['user_id'])
+        return team_id
