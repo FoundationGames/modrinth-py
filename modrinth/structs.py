@@ -67,7 +67,7 @@ class Mod:
     def server_side(self) -> str: return self.__data["server_side"]
 
     @property
-    def downloads(self) -> str: return self.__data["downloads"]
+    def downloads(self) -> int: return self.__data["downloads"]
 
     @property
     def categories(self) -> list: return self.__data["categories"]
@@ -92,3 +92,52 @@ class Mod:
 
     @property
     def donation_urls(self) -> list: return self.__data["donation_urls"]
+
+
+class Version:
+    def __init__(self, data : dict):
+        self.__data = data
+
+    @property
+    def id(self) -> str: return self.__data["id"]
+
+    @property
+    def mod_id(self) -> str: return self.__data["mod_id"]
+
+    @property
+    def author_id(self) -> str: return self.__data["author_id"]
+
+    @property
+    def featured(self) -> str: return self.__data["featured"]
+
+    @property
+    def name(self) -> str: return self.__data["name"]
+
+    @property
+    def version_number(self) -> str: return self.__data["version_number"]
+
+    @property
+    def changelog(self) -> str: return self.__data["changelog"]
+
+    @property
+    def changelog_url(self) -> str: return self.__data["changelog_url"]
+
+    @property
+    def date_published(self) -> DateTime: return DateTime(self.__data["date_published"])
+
+    @property
+    def downloads(self) -> int: return self.__data["downloads"]
+
+    @property
+    def version_type(self) -> int: return self.__data["version_type"]
+
+    #skipped "files"
+
+    @property
+    def dependencies(self) -> list: return self.__data["dependencies"]
+
+    @property
+    def game_versions(self) -> list: return self.__data["game_versions"]
+
+    @property
+    def loaders(self) -> list: return self.__data["loaders"]

@@ -38,3 +38,9 @@ print(mod.donation_urls)
 print(type(mod.donation_urls))
 
 
+# -----------------------------------
+
+version = modrinth.get_version("W3lvWTIF")
+print("---- Get Version Test: ----")
+print(version.loaders)
+print(type(version.loaders))
