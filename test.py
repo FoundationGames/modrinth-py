@@ -2,25 +2,29 @@ import modrinth
 
 # ------------------------------------
 
-search = modrinth.Search(
+results = modrinth.Search(
     categories=["fabric", "decoration"],
     sort="downloads",
     max_results=5
 ).search()
 
-print("---- Search 1: ----")
-for result in search.results:
+print("---- Search Test 1: ----")
+for result in results.results:
     print(result.title)
 
 # ------------------------------------
 
-search = modrinth.Search(
+results = modrinth.Search(
     licenses=["mit"],
     max_results=8
 ).search()
 
-print("---- Search 2: ----")
-for result in search.results:
+print("---- Search Test 2: ----")
+for result in results.results:
     print(result.title)
 
 # ------------------------------------
+
+user = modrinth.get_user("WH9NfS5R")
+print("---- Get User Test: ----")
+print(user.display_name)

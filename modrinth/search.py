@@ -1,10 +1,10 @@
 import json
 
-# pip install requests (if necessary)
 import requests
 from requests.models import Response
 
-api_prefix = "https://api.modrinth.com/"
+from . import common
+from .common import api_prefix
 
 class SearchResult():
     def __init__(self, data : dict):
@@ -48,17 +48,12 @@ class SearchResult():
     
 
 class SearchResults:
-    def __init__(self, response : Response):
-        if response.status_code != 200:
-            raise LookupError(f"Recieved status code {response.status_code} upon GET from {response.url}")
-        r_json = response.json()
-        if "error" in r_json:
-            raise LookupError(r_json["description"])
+    def __init__(self, data : dict):
         self.__results = []
-        for mod in r_json["hits"]:
+        for mod in data["hits"]:
             self.results.append(SearchResult(mod))
-        self.__skipped = r_json["offset"]
-        self.__total = r_json["total_hits"]
+        self.__skipped = data["offset"]
+        self.__total = data["total_hits"]
 
     @property
     def results(self) -> list:
@@ -136,4 +131,4 @@ class Search:
             "limit": self.__max_results
         }
         response = requests.get(api_prefix+"api/v1/mod", params=params)
-        return SearchResults(response)
+        return SearchResults(common.to_json(response))
