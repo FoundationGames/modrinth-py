@@ -66,7 +66,7 @@ async def mod(ctx, mod_id : str = None):
         if mod_teamid:
             team = modrinth.get_team(mod_teamid)
 
-        team_developers = team.team_id
+        team_developers = team.user_id
         developer_string = ""
         number = 0
         for i in team_developers:
@@ -98,5 +98,4 @@ async def mod(ctx, mod_id : str = None):
     
 
 if __name__ == "__main__":
-    token = "ODYwMjI2NTAwNzg3OTYxODg2.YN4KXA.rT4RxWyH8XHqAlzfxM00TiywNSU"
-    bot.run(token)
+    bot.run("Your Token here")
