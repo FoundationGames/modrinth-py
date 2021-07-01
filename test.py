@@ -28,3 +28,13 @@ for result in results.results:
 user = modrinth.get_user("WH9NfS5R")
 print("---- Get User Test: ----")
 print(user.display_name)
+
+
+# -----------------------------------
+
+mod = modrinth.get_mod("5g7OOxWC")
+print("---- Get Mod Test: ----")
+print(mod.donation_urls)
+print(type(mod.donation_urls))
+
+
