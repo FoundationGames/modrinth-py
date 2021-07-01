@@ -98,5 +98,5 @@ async def mod(ctx, mod_id : str = None):
     
 
 if __name__ == "__main__":
-    token = "ODYwMjI2NTAwNzg3OTYxODg2.YN4KXA.rT4RxWyH8XHqAlzfxM00TiywNSU"
+    token = "Your token here"
     bot.run(token)
