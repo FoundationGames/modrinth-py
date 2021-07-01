@@ -62,6 +62,7 @@ async def mod(ctx, mod_id : str = None):
         mod_discord = mod.discord_url
         mod_downloads = mod.downloads
         mod_teamid = mod.team
+        issues = mod.issues_url
 
         if mod_teamid:
             team = modrinth.get_team(mod_teamid)
@@ -77,13 +78,21 @@ async def mod(ctx, mod_id : str = None):
 
 
         embed.title = f"{modtitle} - slug: {modslug}"
-        embed.description = f"{moddescription}\n\n``Team ID.`` {mod_teamid}\n{developer_string}"
+        embed.description = f"{moddescription}\n\n``Team ID.`` {mod_teamid}\n{developer_string}[**Link**](https://modrinth.com/mod/{modslug})"
         #embed.description = f"{moddescription}\n\n``Developer:`` {user.username}"
         embed.add_field(name = "Client Side", value = modclient)
         embed.add_field(name = "Server Side", value = modserver)
         embed.add_field(name = "Downloads", value = mod_downloads)
-        embed.add_field(name = "Issues", value = f"[Issues URL]({mod_discord})")
-        embed.add_field(name = "Discord", value = f"[Support Server]({mod_discord})")
+        if not issues:
+            issues = "None"
+        else:
+            issues = f"[**Issues URL**]({issues})"
+        embed.add_field(name = "Issues", value = issues)
+        if not mod_discord:
+            mod_discord = "None"
+        else:
+            mod_discord = f"[**Discord URL**]({mod_discord})"
+        embed.add_field(name = "Discord", value = mod_discord)
         embed.set_thumbnail(url = mod_icon)
 
         await ctx.send(embed=embed)
@@ -97,5 +106,6 @@ async def mod(ctx, mod_id : str = None):
 
     
 
+
 if __name__ == "__main__":
-    bot.run("Your Token here")
+    bot.run("Your Stuff Token")
