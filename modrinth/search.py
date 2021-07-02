@@ -1,72 +1,8 @@
 import json
 
-import requests
-from requests.models import Response
+from .structs import *
 
 from . import common
-from .common import api_prefix
-
-class SearchResult():
-    def __init__(self, data : dict):
-        self.__data = data
-        self.__id = data["mod_id"].replace("local-", "")
-    
-    @property
-    def id(self): return self.__id
-    @property
-    def type(self): return self.__data["project_type"]
-    @property
-    def author(self): return self.__data["author"]
-    @property
-    def title(self): return self.__data["title"]
-    @property
-    def description(self): return self.__data["description"]
-    @property
-    def categories(self): return self.__data["categories"]
-    @property
-    def game_versions(self): return self.__data["versions"]
-    @property
-    def lastest_game_version(self): return self.__data["lastest_version"]
-    @property
-    def downloads(self): return self.__data["downloads"]
-    @property
-    def url(self): return self.__data["page_url"]
-    @property
-    def icon_url(self): return self.__data["icon_url"]
-    @property
-    def author_url(self): return self.__data["author_url"]
-    @property
-    def date_created(self): return self.__data["date_created"]
-    @property
-    def date_modified(self): return self.__data["date_modified"]
-    @property
-    def license(self): return self.__data["license"]
-    @property
-    def client_side(self): return self.__data["client_side"]
-    @property
-    def server_side(self): return self.__data["server_side"]
-    
-
-class SearchResults:
-    def __init__(self, data : dict):
-        self.__results = []
-        for mod in data["hits"]:
-            self.results.append(SearchResult(mod))
-        self.__skipped = data["offset"]
-        self.__total = data["total_hits"]
-
-    @property
-    def results(self) -> list:
-        return self.__results
-
-    @property
-    def amount_skipped(self) -> int:
-        return self.__skipped
-
-    @property
-    def amount_total(self) -> int:
-        return self.__total
-
 
 class Search:
     def __init__(self, query : str = "", categories : list = [], versions : list = [], licenses : list = [], client_support : list = [], server_support : list = [], sort : str = "relevance", start : int = 0, max_results : int = 10):
@@ -122,13 +58,12 @@ class Search:
         return self
 
     def search(self) -> SearchResults:
-        global api_prefix
         params = {
             "query": self.__query,
-            "facets": json.dumps(self.__filters),
             "index": self.__sort,
             "offset": self.__start,
             "limit": self.__max_results
         }
-        response = requests.get(api_prefix+"api/v1/mod", params=params)
-        return SearchResults(common.to_json(response))
+        if len(self.__filters) > 0:
+            params["facets"] = json.dumps(self.__filters)
+        return api._search(params)
