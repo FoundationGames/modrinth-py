@@ -3,6 +3,7 @@ import random
 import shutil
 import json
 import asyncio
+import functools
 from discord import Embed 
 from discord.ext import commands
 
@@ -28,8 +29,9 @@ async def search(ctx, *, search : str = None):
     embed.title = "Searching..."
     embed.description = "Loading data"
     ogmessage = await ctx.send(embed=embed)
-    my_task =  asyncio.create_task(search_function(search, 10))
-    results = await my_task
+    thing = functools.partial(search_function, search, 10)
+    results =  await bot.loop.run_in_executor(None, thing)
+    print(results)
     embed = discord.Embed()
     mymods = ""
     number = 0
@@ -108,7 +110,7 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         return await ctx.send("Specify a mod ID")
 
     try:
-        mod = modrinth.get_mod(mod_id)
+        mod = await modrinth.get_async_mod(mod_id)
         embed = discord.Embed()
 
         modslug = mod.slug
@@ -155,7 +157,7 @@ async def search_function(query, amt):
     print("fired")
     results = modrinth.Search(
         query=query,
-        max_results=amt
+        max_results=amt,
     ).search()
     print("finished")
     return results

@@ -20,3 +20,6 @@ def get_version(id : str) -> Version:
 
 def get_team(id : str) -> Team:
     return api._team(id)
+
+async def get_mod_async(id : str) -> Mod:
+    return await api._async_mod(id)
