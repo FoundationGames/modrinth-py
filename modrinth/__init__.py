@@ -9,17 +9,20 @@ from .structs import SearchResults
 
 from .search import Search
 
-def get_user(id : str) -> User:
-    return api._user(id)
+async def get_user(id : str) -> User:
+    return await api._user(id)
 
-def get_mod(id : str) -> Mod:
-    return api._mod(id)
+async def get_mod(id : str) -> Mod:
+    return await api._mod(id)
 
-def get_version(id : str) -> Version:
-    return api._version(id)
+async def get_version(id : str) -> Version:
+    return await api._version(id)
 
-def get_team(id : str) -> Team:
-    return api._team(id)
+async def get_team(id : str) -> Team:
+    return await api._team(id)
 
-async def get_mod_async(id : str) -> Mod:
-    return await api._async_mod(id)
+def open():
+    api._open()
+
+def close():
+    api._close()

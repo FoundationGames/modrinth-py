@@ -36,12 +36,14 @@ class TeamMember:
 
     @property
     def team_id(self) -> str: return self.__data["team_id"]
-    @property
-    def team(self): return api._team(self.team_id)
+
+    async def get_team(self): return await api._team(self.team_id)
+
     @property
     def user_id(self) -> str: return self.__data["user_id"]
-    @property
-    def user(self): return api._user(self.user_id)
+
+    async def get_user(self): return await api._user(self.user_id)
+
     @property
     def role(self) -> str: return self.__data["role"]
     @property
@@ -141,9 +143,6 @@ class Version:
 class Mod:
     def __init__(self, data : dict):
         self.__data = data
-        self.__versions = []
-        for id in data["versions"]:
-            self.__versions.append(api._version(id))
         self.__donation_links = []
         for link in data["donation_urls"]:
             self.__donation_links.append(DonationLink(link))
@@ -154,8 +153,9 @@ class Mod:
     def slug(self) -> str: return self.__data["slug"]
     @property
     def team_id(self) -> str: return self.__data["team"]
-    @property
-    def team(self): return api._team(self.__data["team"])
+
+    async def get_team(self): return await api._team(self.__data["team"])
+
     @property
     def title(self) -> str: return self.__data["title"]
     @property
@@ -180,8 +180,13 @@ class Mod:
     def downloads(self) -> int: return self.__data["downloads"]
     @property
     def categories(self) -> list: return self.__data["categories"]
-    @property
-    def versions(self) -> list: return self.__versions
+    
+    async def get_versions(self) -> list:
+        versions = []
+        for id in self.__data["versions"]:
+            versions.append(await api._version(id))
+        return versions
+
     @property
     def icon_url(self) -> str: return self.__data["icon_url"]
     @property
@@ -200,12 +205,12 @@ class SearchResult():
     def __init__(self, data : dict):
         self.__data = data
         self.__id = data["mod_id"].replace("local-", "")
-        self.__mod = api._mod(self.__id)
     
     @property
     def id(self): return self.__id
-    @property 
-    def mod(self) -> Mod: return self.__mod
+    
+    async def get_mod(self): return await api._mod(self.__id)
+
     @property
     def type(self): return self.__data["project_type"]
     @property
