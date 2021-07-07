@@ -19,11 +19,11 @@ for member in team.members:
 # -----------------------------------
 
 mod2 = modrinth.get_mod("sandwichable")
-print(mod2.title)
+print(mod2.versions)
 
-print("mod async test")
+"""print("mod async test")
 async def main():
     mod = await modrinth.get_mod_async("sandwichable")
 
 loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
+loop.run_until_complete(main())"""
