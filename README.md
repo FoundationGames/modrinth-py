@@ -21,5 +21,12 @@ async def main():
   mod_id = "YOUR MOD ID"
   mod = await modrinth.get_mod(mod_id)
   print(mod.title)
+  
+  # ---------------------------
+  
+  await modrinth.close() #closes your session
+  
+loop = asyncio.get_event_loop() 
+loop.run_until_complete(async_main())
   ```
   
