@@ -17,16 +17,6 @@ intents.members = True
 bot = commands.Bot("m!", intents = intents)
 bot.remove_command("help")
 
-async def is_admin(ctx):
-    if ctx.author.id == 553408456795881472:
-        return True
-    elif ctx.author.id == 585495505346232330:
-        await ctx.send("go kill your self")
-    elif ctx.author.id == 587338294526738562:
-        await ctx.send("haha foundation probably tried another ``exit()``")
-    else:
-        print(f"{ctx.author.name}, little shit had tried to use eval LMFAO")
-        await ctx.send("You're not a bot developer.")
 
 @bot.event
 async def on_ready():
