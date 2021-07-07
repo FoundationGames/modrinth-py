@@ -29,7 +29,7 @@ async def main():
 
     print("--- Test 2 ---")
     
-    mod_id = "sandwichable"
+    mod_id = "sandwichable" #it can also take slugs
     mod = await modrinth.get_mod(mod_id)
     print(mod.title)
     
