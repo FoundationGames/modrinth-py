@@ -5,6 +5,7 @@ A (WORK IN PROGRESS) Modrinth API wrapper in Python
 Quick Start
 ```python
 import modrinth
+import asyncio
 
 async def main():
 
