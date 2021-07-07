@@ -20,5 +20,6 @@ async def main():
   
   mod_id = "YOUR MOD ID"
   mod = await modrinth.get_mod(mod_id)
-  print(mod.title)```
+  print(mod.title)
+  ```
   
