@@ -36,6 +36,16 @@ async def async_main():
 
     # ------------------------------------
 
+    print("---- Search Test 4: ----")
+    mod = await modrinth.get_mod("mOgUt4GM")
+    mod_team_id = mod.team_id
+    team = await modrinth.get_team(mod_team_id)
+
+    print(team.user_id)
+    for member in team.user_id:
+        user = await modrinth.get_user(member)
+        print(user.display_name)
+    # ------------------------------------
     await modrinth.close()
 
 loop = asyncio.get_event_loop() 

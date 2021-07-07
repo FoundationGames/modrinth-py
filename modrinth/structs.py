@@ -25,7 +25,8 @@ class User:
     @property
     def bio(self) -> str: return self.__data["bio"]
     @property
-    def created(self) -> str: return DateTime(self.__data["created"])
+    def created(self) -> str: return self.__data("created")
+
     @property
     def role(self) -> str: return self.__data["role"]
 
@@ -51,8 +52,9 @@ class TeamMember:
 
 
 class Team:
-    def __init__(self, id : str, data : list):
+    def __init__(self, id : str, data : dict):
         self.__id = id
+        self.__data = data
         self.__members = []
         for user in data:
             self.__members.append(TeamMember(user))
@@ -63,6 +65,12 @@ class Team:
     def members(self) -> list: return self.__members
 
 
+    @property
+    def user_id(self) -> list:
+        team_id = []
+        for i in range(len(self.__data)):
+            team_id.append(self.__data[i]['user_id'])
+        return team_id
 class License:
     def __init__(self, data : dict):
         self.__data = data

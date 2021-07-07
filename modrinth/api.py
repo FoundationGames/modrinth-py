@@ -35,7 +35,7 @@ async def _team(id : str) -> Team:
 
 async def _search(params : dict) -> SearchResults:
     global _session
-    async with _session.get(common._api_prefix+"v1/mod", json=params) as response:
+    async with _session.get(common._api_prefix+"v1/mod", params=params) as response:
         return SearchResults(await _to_json(response))
 
 async def _open():
