@@ -57,7 +57,7 @@ class Search:
         self.__max_results = max_results
         return self
 
-    def search(self) -> SearchResults:
+    async def search(self) -> SearchResults:
         params = {
             "query": self.__query,
             "index": self.__sort,
@@ -66,4 +66,4 @@ class Search:
         }
         if len(self.__filters) > 0:
             params["facets"] = json.dumps(self.__filters)
-        return api._search(params)
+        return await api._search(params)

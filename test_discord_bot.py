@@ -29,9 +29,7 @@ async def search(ctx, *, search : str = None):
     embed.title = "Searching..."
     embed.description = "Loading data"
     ogmessage = await ctx.send(embed=embed)
-    thing = functools.partial(search_function, search, 10)
-    results =  await bot.loop.run_in_executor(None, thing)
-    print(results)
+    results = await search_function(search, 10)
     embed = discord.Embed()
     mymods = ""
     number = 0
@@ -44,7 +42,6 @@ async def search(ctx, *, search : str = None):
     embed.title = "List of Mods"
     embed.description = mymods
     embed.set_thumbnail(url = "https://cdn.discordapp.com/emojis/844330470719356970.png?v=1")
-
     await ogmessage.edit(embed=embed)
     async def add_multiple_reactions(message, reactions, number): #better because it's async
         amount_ = 0
@@ -61,6 +58,7 @@ async def search(ctx, *, search : str = None):
     try:
         reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
     except asyncio.TimeoutError:
+
         return
     else:
         reaction = str(reaction)
@@ -110,7 +108,7 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         return await ctx.send("Specify a mod ID")
 
     try:
-        mod = await modrinth.get_async_mod(mod_id)
+        mod = await modrinth.get_mod(mod_id)
         embed = discord.Embed()
 
         modslug = mod.slug
@@ -139,7 +137,6 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         embed.add_field(name = "Issues", value = f"[Issues URL]({mod_discord})")
         embed.add_field(name = "Discord", value = f"[Support Server]({mod_discord})")
         embed.set_thumbnail(url = mod_icon)
-
         
         if editable:
             return await editable.edit(embed=embed)
@@ -154,14 +151,14 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         return await ctx.send("There was an error")
 
 async def search_function(query, amt):
-    print("fired")
-    results = modrinth.Search(
+    print(query)
+    results = await modrinth.Search(
         query=query,
         max_results=amt,
     ).search()
-    print("finished")
     return results
-    
+
+
 
 if __name__ == "__main__":
     token = ""
