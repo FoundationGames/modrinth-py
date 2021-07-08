@@ -17,9 +17,9 @@ async def main():
     team = await modrinth.get_team(mod_team_id)
 
     print(mod.title)
-    print(team.user_id)
+    print(team.user_ids)
 
-    for member in team.user_id:
+    for member in team.user_ids:
         user = await modrinth.get_user(member)
         print(user.display_name)
 
@@ -31,11 +31,25 @@ async def main():
     team = await mod.get_team()
 
     print(mod.title)
-    print(team.user_id)
+    print(team.user_ids)
     
-    for member in team.user_id:
+    for member in team.user_ids:
         user = await modrinth.get_user(member)
-        print(user.display_name)
+        print(f"{user.display_name} - {user.id}")
+
+
+    # -----------------------------------
+
+    print("---- Get Team Info: ----")
+
+    mod = await modrinth.get_mod("mOgUt4GM")
+    team = await mod.get_team()
+
+    for member_info in team.team_info:
+        user_id = member_info["user_id"]
+        user_role = member_info["role"]
+        print(f"User ID: {user_id} - User Role: {user_role}")
+
 
     await modrinth.close() # Remember to Close all sessions at the end of the program. 
 

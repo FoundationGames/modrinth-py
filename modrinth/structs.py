@@ -26,7 +26,6 @@ class User:
     def bio(self) -> str: return self.__data["bio"]
     @property
     def created(self) -> str: return self.__data("created")
-
     @property
     def role(self) -> str: return self.__data["role"]
 
@@ -65,11 +64,21 @@ class Team:
     def members(self) -> list: return self.__members
 
     @property
-    def user_id(self) -> list:
-        team_id = []
+    def team_info(self) -> list:
+        team_ = []
+        for i in range(len(self.__data)): # Loops through a list with a dictionary nested in it.  
+            user_dict = {"user_id" : self.__data[i]["user_id"], "role" : self.__data[i]["role"]}
+            team_.append(user_dict)
+        return team_
+
+    @property
+    def user_ids(self) -> list:
+        team_user_id = []
         for i in range(len(self.__data)):
-            team_id.append(self.__data[i]['user_id'])
-        return team_id
+            team_user_id.append(self.__data[i]['user_id'])
+        return team_user_id
+
+
 
 
 class License:

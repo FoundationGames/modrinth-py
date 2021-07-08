@@ -163,6 +163,7 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         modserver = mod.server_side
         mod_icon = mod.icon_url
         mod_discord = mod.discord_url
+        mod_issues = mod.issues_url
         mod_downloads = mod.downloads
         mod_categories = mod.categories
         mod_published = mod.published
@@ -173,10 +174,11 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         team = await modrinth.get_team(mod.team_id)
         developer_string = ""
         number = 0
-        for member in team.user_id:
-            user = await modrinth.get_user(member)
+        for member in team.team_info:
+            user = await modrinth.get_user(member["user_id"])
             number += 1
-            developer_string += f"``Developer {number}:`` **[{user.display_name}](https://modrinth.com/user/{user.id})**\n"
+            role = member["role"]
+            developer_string += f"``Developer {number}:`` **[{user.display_name}](https://modrinth.com/user/{user.id})** - **{role}**\n"
 
         embed.title = f"{modtitle} - slug: {modslug}"
         embed.description = f"{moddescription}\n\n``Team ID.`` {mod.team_id}\n{developer_string}\n**__[VIEW MOD PAGE >](https://modrinth.com/mod/{mod_id})__**"
@@ -186,7 +188,7 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         embed.add_field(name = "Categories", value = categories_list)
         embed.add_field(name = "Published", value = mod_published)
         embed.add_field(name = "Updated", value = mod_updated)
-        embed.add_field(name = "Issues", value = f"[Issues URL]({mod_discord})")
+        embed.add_field(name = "Issues", value = f"[Issues URL]({mod_issues})")
         embed.add_field(name = "Discord", value = f"[Support Server]({mod_discord})")
         try:
             embed.set_thumbnail(url = mod_icon)
