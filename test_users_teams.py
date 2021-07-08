@@ -1,29 +1,43 @@
 import modrinth
 import asyncio
 
-# -----------------------------------
 
-"""print("---- Get User Test: ----")
-
-user = modrinth.get_user("Gzv0LYLX")
-print(user.display_name)"""
-
-# -----------------------------------
-
-"""print("---- Get Team Test: ----")
-
-team = modrinth.get_team("Gzv0LYLX")
-for member in team.members:
-    print(member.user.display_name)"""
-
-# -----------------------------------
-
-mod2 = modrinth.get_mod("sandwichable")
-print(mod2.versions)
-
-"""print("mod async test")
 async def main():
-    mod = await modrinth.get_mod_async("sandwichable")
+    print("---- Get User Test: ----")
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())"""
+    user = await modrinth.get_user("TcDPJAHF")
+    print(user.display_name)
+
+    # -----------------------------------
+
+    print("---- Get Team Test A: ----")
+
+    mod = await modrinth.get_mod("mOgUt4GM")
+    mod_team_id = mod.team_id
+    team = await modrinth.get_team(mod_team_id)
+
+    print(mod.title)
+    print(team.user_id)
+
+    for member in team.user_id:
+        user = await modrinth.get_user(member)
+        print(user.display_name)
+
+    # -----------------------------------
+
+    print("---- Get Team Test B: ----")
+
+    mod = await modrinth.get_mod("mOgUt4GM")
+    team = await mod.get_team()
+
+    print(mod.title)
+    print(team.user_id)
+    
+    for member in team.user_id:
+        user = await modrinth.get_user(member)
+        print(user.display_name)
+
+    await modrinth.close() # Remember to Close all sessions at the end of the program. 
+
+loop = asyncio.get_event_loop() 
+loop.run_until_complete(main())

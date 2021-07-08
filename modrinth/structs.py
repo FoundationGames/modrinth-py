@@ -64,13 +64,14 @@ class Team:
     @property
     def members(self) -> list: return self.__members
 
-
     @property
     def user_id(self) -> list:
         team_id = []
         for i in range(len(self.__data)):
             team_id.append(self.__data[i]['user_id'])
         return team_id
+
+
 class License:
     def __init__(self, data : dict):
         self.__data = data
@@ -213,7 +214,8 @@ class SearchResult():
     def __init__(self, data : dict):
         self.__data = data
         self.__id = data["mod_id"].replace("local-", "")
-    
+
+
     @property
     def id(self): return self.__id
     

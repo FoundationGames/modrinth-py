@@ -3,7 +3,6 @@ import random
 import shutil
 import json
 import asyncio
-import functools
 from discord import Embed 
 from discord.ext import commands
 
@@ -11,6 +10,8 @@ from discord.ext import commands
 import modrinth
 # -------- 
 
+# This is an Example of what you can make with Modrinth.py 
+# Feel free to use any code in this file.
 
 intents = discord.Intents.default()
 intents.members = True
@@ -47,7 +48,7 @@ async def search(ctx, *, search : str = None):
         await ogmessage.edit(embed=embed)
         return
     await ogmessage.edit(embed=embed)
-    async def add_multiple_reactions(message, reactions, number): #better because it's async
+    async def add_multiple_reactions(message, reactions, number): 
         amount_ = 0
         for r in range(number):
             await message.add_reaction(reactions[amount_])
@@ -120,6 +121,28 @@ async def user(ctx, user_id : str = None):
     embed.set_thumbnail(url = user.avatar_url)
 
     await ctx.send(embed=embed)
+
+
+@bot.command()
+async def version(ctx, version_id : str = None):
+    if version_id == None:
+        await ctx.send("You need to specify a ``user id``.")
+        return
+    
+    user = await modrinth.get_version(version_id)
+
+
+    embed = discord.Embed()
+    embed.title = f"{user.display_name}'s profile"
+    embed.description = f"{user.bio}\n\nUser ID: ``{user.id}``"
+    #embed.add_field(name = "Email", value = user.email) for some reason email always sends None
+    #embed.add_field(name = "Created", value = user.created) 
+    embed.add_field(name = "Role", value = user.role)
+    embed.add_field(name = "Github id", value = user.github_id)
+    embed.set_thumbnail(url = user.avatar_url)
+
+    await ctx.send(embed=embed)
+
 @bot.command()
 async def mod(ctx, mod_id : str = None):
     await find_mod(ctx, mod_id)
@@ -199,7 +222,7 @@ async def search_function(query, amt):
 @bot.command()
 @commands.is_owner()
 async def shutdown_bot(ctx):
-    await modrinth.close()
+    await modrinth.close() # Closes the session when the bot shuts down
     await ctx.send("shutting down.")
     exit()
 
@@ -208,7 +231,7 @@ async def help(ctx):
     embed = discord.Embed()
     embed.title = "Help"
     embed.description = "This bot is a 'proof of concept' on what you can do with modrinth.py.\nCheck out the [API wrapper here](https://github.com/FoundationGames/modrinth-py)\nIf you have any questions join the [help server](https://discord.gg/sDrqXQ5XMy)"
-    embed.add_field(name="Search for a Mod",value = "m!search ``<mod slug/id>``")
+    embed.add_field(name="Search for a Mod",value = "m!search ``<query>``")
     embed.add_field(name="Mod Info",value = "m!mod ``<mod slug/id>``")
     embed.add_field(name="User Info",value = "m!user ``<mod id>``")
     await ctx.send(embed=embed)

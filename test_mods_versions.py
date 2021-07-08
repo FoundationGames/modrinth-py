@@ -1,23 +1,36 @@
 import modrinth
+import asyncio
 
 # ------------------------------------
 
-print("---- Get Mod Test: ----")
+async def main():
 
-mod = modrinth.get_mod("AANobbMI")
-for version in mod.versions:
+    # ------------------------------------
+
+    print("---- Get Mod Test: ----")
+
+    mod = await modrinth.get_mod("5g7OOxWC")
+    versions = await mod.get_versions()
+
+    for version in versions:
+        print(version.name)
+        print(version.changelog)
+
+    # -----------------------------------
+
+    print("---- Get Version Test: ----")
+
+    version = await modrinth.get_version("W3lvWTIF")
     print(version.number)
-for link in mod.donation_links:
-    print(link.id+" "+link.url)
+    for file in version.files:
+        print(file.filename)
+        print(file.sha512)
 
-# -----------------------------------
+    # ------------------------------------
 
-print("---- Get Version Test: ----")
+    await modrinth.close()
 
-version = modrinth.get_version("W3lvWTIF")
-print(version.number)
-for file in version.files:
-    print(file.filename)
-    print(file.sha512)
 
-# ------------------------------------
+
+loop = asyncio.get_event_loop() 
+loop.run_until_complete(main())
