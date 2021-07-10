@@ -4,31 +4,29 @@ import asyncio
 # ------------------------------------
 
 async def main():
+    async with modrinth.ModrinthSession() as session:
+        # ------------------------------------
 
-    # ------------------------------------
+        print("---- Get Mod Test: ----")
 
-    print("---- Get Mod Test: ----")
+        mod = await session.get_mod("5g7OOxWC")
+        versions = await mod.get_versions()
 
-    mod = await modrinth.get_mod("5g7OOxWC")
-    versions = await mod.get_versions()
+        for version in versions:
+            print(version.name)
+            print(version.changelog)
 
-    for version in versions:
-        print(version.name)
-        print(version.changelog)
+        # -----------------------------------
 
-    # -----------------------------------
+        print("---- Get Version Test: ----")
 
-    print("---- Get Version Test: ----")
+        version = await session.get_version("W3lvWTIF")
+        print(version.number)
+        for file in version.files:
+            print(file.filename)
+            print(file.sha512)
 
-    version = await modrinth.get_version("W3lvWTIF")
-    print(version.number)
-    for file in version.files:
-        print(file.filename)
-        print(file.sha512)
-
-    # ------------------------------------
-
-    await modrinth.close()
+        # ------------------------------------
 
 
 

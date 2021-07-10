@@ -31,18 +31,19 @@ class User:
 
 
 class TeamMember:
-    def __init__(self, data : dict):
+    def __init__(self, session, data : dict):
         self.__data = data
+        self.__session = session
 
     @property
     def team_id(self) -> str: return self.__data["team_id"]
 
-    async def get_team(self): return await api._team(self.team_id)
+    async def get_team(self): return await api._team(self.__session, self.team_id)
 
     @property
     def user_id(self) -> str: return self.__data["user_id"]
 
-    async def get_user(self): return await api._user(self.user_id)
+    async def get_user(self): return await api._user(self.__session, self.user_id)
 
     @property
     def role(self) -> str: return self.__data["role"]
@@ -51,34 +52,21 @@ class TeamMember:
 
 
 class Team:
-    def __init__(self, id : str, data : dict):
+    def __init__(self, session, id : str, data : dict):
         self.__id = id
         self.__data = data
         self.__members = []
+        self.__user_ids = []
         for user in data:
-            self.__members.append(TeamMember(user))
+            self.__members.append(TeamMember(session, user))
+            self.__user_ids.append(user["user_id"])
 
     @property
     def id(self) -> str: return self.__id
     @property
     def members(self) -> list: return self.__members
-
     @property
-    def team_info(self) -> list:
-        team_ = []
-        for i in range(len(self.__data)): # Loops through a list with a dictionary nested in it.  
-            user_dict = {"user_id" : self.__data[i]["user_id"], "role" : self.__data[i]["role"]}
-            team_.append(user_dict)
-        return team_
-
-    @property
-    def user_ids(self) -> list:
-        team_user_id = []
-        for i in range(len(self.__data)):
-            team_user_id.append(self.__data[i]['user_id'])
-        return team_user_id
-
-
+    def user_ids(self) -> list: return self.__user_ids
 
 
 class License:
@@ -159,11 +147,12 @@ class Version:
 
 
 class Mod:
-    def __init__(self, data : dict):
+    def __init__(self, session, data : dict):
         self.__data = data
         self.__donation_links = []
         for link in data["donation_urls"]:
             self.__donation_links.append(DonationLink(link))
+        self.__session = session
 
     @property
     def id(self) -> str: return self.__data["id"]
@@ -172,7 +161,7 @@ class Mod:
     @property
     def team_id(self) -> str: return self.__data["team"]
 
-    async def get_team(self): return await api._team(self.__data["team"])
+    async def get_team(self): return await api._team(self.__session, self.__data["team"])
 
     @property
     def title(self) -> str: return self.__data["title"]
@@ -202,7 +191,7 @@ class Mod:
     async def get_versions(self) -> list:
         versions = []
         for id in self.__data["versions"]:
-            versions.append(await api._version(id))
+            versions.append(await api._version(self.__session, id))
         return versions
 
     @property
@@ -219,16 +208,17 @@ class Mod:
     def donation_links(self) -> list: return self.__donation_links
 
 
-class SearchResult():
-    def __init__(self, data : dict):
+class SearchResult:
+    def __init__(self, session, data : dict):
         self.__data = data
         self.__id = data["mod_id"].replace("local-", "")
+        self.__session = session
 
 
     @property
     def id(self): return self.__id
     
-    async def get_mod(self): return await api._mod(self.__id)
+    async def get_mod(self): return await api._mod(self.__session, self.__id)
 
     @property
     def type(self): return self.__data["project_type"]
@@ -265,11 +255,11 @@ class SearchResult():
     
 
 class SearchResults:
-    def __init__(self, data : dict):
+    def __init__(self, session, data : dict):
         self.__data = data
         self.__results = []
         for hit in data["hits"]:
-            self.results.append(SearchResult(hit))
+            self.results.append(SearchResult(session, hit))
 
     @property
     def results(self) -> list: return self.__results

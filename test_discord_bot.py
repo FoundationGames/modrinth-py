@@ -15,9 +15,9 @@ import modrinth
 
 intents = discord.Intents.default()
 intents.members = True
-bot = commands.Bot("m!", intents = intents)
+bot = commands.Bot("mt!", intents = intents)
 bot.remove_command("help")
-
+mrsession = modrinth.ModrinthSession()
 
 @bot.event
 async def on_ready():
@@ -63,7 +63,6 @@ async def search(ctx, *, search : str = None):
     try:
         reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
     except asyncio.TimeoutError:
-
         return
     else:
         reaction = str(reaction)
@@ -104,11 +103,12 @@ async def search(ctx, *, search : str = None):
 
 @bot.command()
 async def user(ctx, user_id : str = None):
+    global mrsession
     if user_id == None:
         await ctx.send("You need to specify a ``user id``.")
         return
     
-    user = await modrinth.get_user(user_id)
+    user = await mrsession.get_user(user_id)
 
 
     embed = discord.Embed()
@@ -125,11 +125,12 @@ async def user(ctx, user_id : str = None):
 
 @bot.command()
 async def version(ctx, version_id : str = None):
+    global mrsession
     if version_id == None:
         await ctx.send("You need to specify a ``user id``.")
         return
     
-    user = await modrinth.get_version(version_id)
+    user = await mrsession.get_version(version_id)
 
 
     embed = discord.Embed()
@@ -148,11 +149,12 @@ async def mod(ctx, mod_id : str = None):
     await find_mod(ctx, mod_id)
 
 async def find_mod(ctx, mod_id : str = None, editable = None):
+    global mrsession
     if mod_id == None:
         return await ctx.send("Specify a mod ID")
 
     try:
-        mod = await modrinth.get_mod(mod_id)
+        mod = await mrsession.get_mod(mod_id)
         embed = discord.Embed()
 
         modslug = mod.slug
@@ -171,13 +173,13 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         categories_list = ""
         for categories in mod_categories:
             categories_list += (f"{categories}, ")
-        team = await modrinth.get_team(mod.team_id)
+        team = await mrsession.get_team(mod.team_id)
         developer_string = ""
         number = 0
-        for member in team.team_info:
-            user = await modrinth.get_user(member["user_id"])
+        for member in team.members:
+            user = await member.get_user()
             number += 1
-            role = member["role"]
+            role = member.role
             developer_string += f"``Developer {number}:`` **[{user.display_name}](https://modrinth.com/user/{user.id})** - **{role}**\n"
 
         embed.title = f"{modtitle} - slug: {modslug}"
@@ -215,16 +217,19 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         return await ctx.send("There was an error")
 
 async def search_function(query, amt):
-    results = await modrinth.Search(
-        query=query,
-        max_results=amt,
-    ).search()
+    global mrsession
+    results = await mrsession.search(
+        modrinth.Search(
+            query=query,
+            max_results=amt,
+        )
+    )
     return results
 
 @bot.command()
 @commands.is_owner()
 async def shutdown_bot(ctx):
-    await modrinth.close() # Closes the session when the bot shuts down
+    await mrsession.close() # Closes the session when the bot shuts down
     await ctx.send("shutting down.")
     exit()
 
@@ -235,7 +240,7 @@ async def help(ctx):
     embed.description = "This bot is a 'proof of concept' on what you can do with modrinth.py.\nCheck out the [API wrapper here](https://github.com/FoundationGames/modrinth-py)\nIf you have any questions join the [help server](https://discord.gg/sDrqXQ5XMy)"
     embed.add_field(name="Search for a Mod",value = "m!search ``<query>``")
     embed.add_field(name="Mod Info",value = "m!mod ``<mod slug/id>``")
-    embed.add_field(name="User Info",value = "m!user ``<mod id>``")
+    embed.add_field(name="User Info",value = "m!user ``<user id>``")
     await ctx.send(embed=embed)
 @bot.event
 async def on_command_error(ctx,error):
