@@ -66,7 +66,6 @@ class Team:
     @property
     def members(self) -> list: return self.__members
     @property
-<<<<<<< HEAD
     def team_info(self) -> list:
         team_ = []
         for i in range(len(self.__data)): # Loops through a list with a dictionary nested in it.  
@@ -82,9 +81,6 @@ class Team:
         return team_user_id
 
 
-=======
-    def user_ids(self) -> list: return self.__user_ids
->>>>>>> 99ecd2f8d8928636560f860ee523c7af25c6f80d
 
 
 class License:
