@@ -16,6 +16,8 @@ async def main():
             print(version.name)
             print(version.changelog)
 
+        print(version.date_published)
+
         # -----------------------------------
 
         print("---- Get Version Test: ----")

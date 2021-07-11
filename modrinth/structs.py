@@ -1,10 +1,10 @@
 from . import common, api
+import datetime
 
+_format_rfc3339 = "%Y-%m-%dT%H:%M:%S.%fZ"
 
-class DateTime:
-    def __init__(self, date_time : str):
-        pass
-
+def _datetime(dtstr : str):
+    return datetime.datetime.strptime(dtstr, _format_rfc3339)
 
 class User:
     def __init__(self, data : dict):
@@ -25,7 +25,7 @@ class User:
     @property
     def bio(self) -> str: return self.__data["bio"]
     @property
-    def created(self) -> str: return self.__data("created")
+    def created(self) -> datetime.datetime: return _datetime(self.__data("created"))
     @property
     def role(self) -> str: return self.__data["role"]
 
@@ -66,21 +66,7 @@ class Team:
     @property
     def members(self) -> list: return self.__members
     @property
-    def team_info(self) -> list:
-        team_ = []
-        for i in range(len(self.__data)): # Loops through a list with a dictionary nested in it.  
-            user_dict = {"user_id" : self.__data[i]["user_id"], "role" : self.__data[i]["role"], "accepted" : self.__data[i]["accepted"]}
-            team_.append(user_dict)
-        return team_
-
-    @property
-    def user_ids(self) -> list:
-        team_user_id = []
-        for i in range(len(self.__data)):
-            team_user_id.append(self.__data[i]['user_id'])
-        return team_user_id
-
-
+    def user_ids(self) -> list: return self.__user_ids
 
 
 class License:
@@ -145,7 +131,7 @@ class Version:
     @property
     def changelog_url(self) -> str: return self.__data["changelog_url"]
     @property
-    def date_published(self): return DateTime(self.__data["date_published"])
+    def date_published(self) -> datetime.datetime: return _datetime(self.__data["date_published"])
     @property
     def downloads(self) -> int: return self.__data["downloads"]
     @property
@@ -186,9 +172,9 @@ class Mod:
     @property
     def body_url(self) -> str: return self.__data["body_url"]
     @property
-    def published(self) -> str: return self.__data["published"]
+    def published(self) -> datetime.datetime: return _datetime(self.__data["published"])
     @property
-    def updated(self) -> str: return self.__data["updated"]
+    def updated(self) -> datetime.datetime: return _datetime(self.__data["updated"])
     @property
     def status(self) -> str: return self.__data["status"]
     @property
@@ -230,42 +216,42 @@ class SearchResult:
 
 
     @property
-    def id(self): return self.__id
+    def id(self) -> str: return self.__id
     
     async def get_mod(self): return await api._mod(self.__session, self.__id)
 
     @property
-    def type(self): return self.__data["project_type"]
+    def type(self) -> str: return self.__data["project_type"]
     @property
-    def author(self): return self.__data["author"]
+    def author_name(self) -> str: return self.__data["author"]
     @property
-    def title(self): return self.__data["title"]
+    def title(self) -> str: return self.__data["title"]
     @property
-    def description(self): return self.__data["description"]
+    def description(self) -> str: return self.__data["description"]
     @property
-    def categories(self): return self.__data["categories"]
+    def categories(self) -> list: return self.__data["categories"]
     @property
-    def game_versions(self): return self.__data["versions"]
+    def game_versions(self) -> list: return self.__data["versions"]
     @property
-    def lastest_game_version(self): return self.__data["lastest_version"]
+    def lastest_game_version(self) -> str: return self.__data["lastest_version"]
     @property
-    def downloads(self): return self.__data["downloads"]
+    def downloads(self) -> int: return self.__data["downloads"]
     @property
-    def url(self): return self.__data["page_url"]
+    def url(self) -> str: return self.__data["page_url"]
     @property
-    def icon_url(self): return self.__data["icon_url"]
+    def icon_url(self) -> str: return self.__data["icon_url"]
     @property
-    def author_url(self): return self.__data["author_url"]
+    def author_url(self) -> str: return self.__data["author_url"]
     @property
-    def date_created(self): return self.__data["date_created"]
+    def date_created(self) -> datetime.datetime: return _datetime(self.__data["date_created"])
     @property
-    def date_modified(self): return self.__data["date_modified"]
+    def date_modified(self) -> datetime.datetime: return _datetime(self.__data["date_modified"])
     @property
-    def license(self): return self.__data["license"]
+    def license_id(self) -> str: return self.__data["license"]
     @property
-    def client_side(self): return self.__data["client_side"]
+    def client_side(self) -> str: return self.__data["client_side"]
     @property
-    def server_side(self): return self.__data["server_side"]
+    def server_side(self) -> str: return self.__data["server_side"]
     
 
 class SearchResults:
