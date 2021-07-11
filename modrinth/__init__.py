@@ -1,3 +1,5 @@
+import aiohttp
+
 from . import api
 
 from .structs import User
@@ -9,20 +11,30 @@ from .structs import SearchResults
 
 from .search import Search
 
-async def get_user(id : str) -> User:
-    return await api._user(id)
+class ModrinthSession:
+    def __init__(self):
+        self._session = aiohttp.ClientSession()
 
-async def get_mod(id : str) -> Mod:
-    return await api._mod(id)
+    async def __aenter__(self):
+        return self
 
-async def get_version(id : str) -> Version:
-    return await api._version(id)
+    async def __aexit__(self, type, value, traceback):
+        await self.close()
 
-async def get_team(id : str) -> Team:
-    return await api._team(id)
+    async def close(self):
+        await self._session.close()
 
-async def open():
-    await api._open()
+    async def get_user(self, id : str) -> User:
+        return await api._user(self._session, id)
 
-async def close():
-    await api._close()
+    async def get_mod(self, id : str) -> Mod:
+        return await api._mod(self._session, id)
+
+    async def get_version(self, id : str) -> Version:
+        return await api._version(self._session, id)
+
+    async def get_team(self, id : str) -> Team:
+        return await api._team(self._session, id)
+
+    async def search(self, search : Search) -> SearchResults:
+        return await search._search(self._session)
