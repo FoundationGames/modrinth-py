@@ -45,9 +45,18 @@ async def main():
     mod = await modrinth.get_mod("mOgUt4GM")
     team = await mod.get_team()
 
+    # Different ways of getting Info
+
     for member_info in team.team_info:
         user_id = member_info["user_id"]
         user_role = member_info["role"]
+        print(f"User ID: {user_id} - User Role: {user_role}")
+
+    print("--- Or ---")
+
+    for member_info in team.members:
+        user_id = member_info.user_id
+        user_role = member_info.role
         print(f"User ID: {user_id} - User Role: {user_role}")
 
 

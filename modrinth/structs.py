@@ -67,7 +67,7 @@ class Team:
     def team_info(self) -> list:
         team_ = []
         for i in range(len(self.__data)): # Loops through a list with a dictionary nested in it.  
-            user_dict = {"user_id" : self.__data[i]["user_id"], "role" : self.__data[i]["role"]}
+            user_dict = {"user_id" : self.__data[i]["user_id"], "role" : self.__data[i]["role"], "accepted" : self.__data[i]["accepted"]}
             team_.append(user_dict)
         return team_
 

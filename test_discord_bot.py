@@ -235,7 +235,7 @@ async def help(ctx):
     embed.description = "This bot is a 'proof of concept' on what you can do with modrinth.py.\nCheck out the [API wrapper here](https://github.com/FoundationGames/modrinth-py)\nIf you have any questions join the [help server](https://discord.gg/sDrqXQ5XMy)"
     embed.add_field(name="Search for a Mod",value = "m!search ``<query>``")
     embed.add_field(name="Mod Info",value = "m!mod ``<mod slug/id>``")
-    embed.add_field(name="User Info",value = "m!user ``<mod id>``")
+    embed.add_field(name="User Info",value = "m!user ``<user id>``")
     await ctx.send(embed=embed)
 @bot.event
 async def on_command_error(ctx,error):
