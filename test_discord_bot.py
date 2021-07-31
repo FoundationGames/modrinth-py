@@ -3,7 +3,8 @@ import random
 import shutil
 import json
 import asyncio
-from discord import Embed 
+from discord import Embed
+from discord_components import DiscordComponents, Button, ButtonStyle, InteractionType, Select, SelectOption
 from discord.ext import commands
 
 # ---------
@@ -21,8 +22,9 @@ mrsession = modrinth.ModrinthSession()
 
 @bot.event
 async def on_ready():
+    DiscordComponents(bot)
     print(f"Modrinth bot ready")
-
+    
 @bot.command()
 @commands.max_concurrency(1,per=commands.BucketType.user,wait=False)
 async def search(ctx, *, search : str = None):
@@ -124,25 +126,26 @@ async def user(ctx, user_id : str = None):
 
 
 @bot.command()
-async def version(ctx, version_id : str = None):
-    global mrsession
-    if version_id == None:
-        await ctx.send("You need to specify a ``user id``.")
-        return
-    
-    user = await mrsession.get_version(version_id)
-
-
-    embed = discord.Embed()
-    embed.title = f"{user.display_name}'s profile"
-    embed.description = f"{user.bio}\n\nUser ID: ``{user.id}``"
-    #embed.add_field(name = "Email", value = user.email) for some reason email always sends None
-    #embed.add_field(name = "Created", value = user.created) 
-    embed.add_field(name = "Role", value = user.role)
-    embed.add_field(name = "Github id", value = user.github_id)
-    embed.set_thumbnail(url = user.avatar_url)
-
-    await ctx.send(embed=embed)
+async def version(ctx, mod_id : str = None):
+    try:
+        global mrsession
+        if mod_id == None:
+            await ctx.send("You need to specify a ``version id``.")
+            return
+        mod = await mrsession.get_mod(mod_id)
+        versions = await mod.get_versions()
+        version_list = ""
+        for version in versions:
+            version_list += f"{version.name}\n"
+        embed = discord.Embed()
+        embed.title = f"{mod.title} - Versions"
+        embed.description = f"**Versions**\n``{version_list}``"
+        #embed.add_field(name = "Email", value = user.email) for some reason email always sends None
+        #embed.add_field(name = "Created", value = user.created) 
+        embed.set_thumbnail(url = mod.icon_url)
+        await ctx.send(embed=embed)
+    except Exception as e:
+        print(e)
 
 @bot.command()
 async def mod(ctx, mod_id : str = None):
@@ -176,11 +179,18 @@ async def find_mod(ctx, mod_id : str = None, editable = None):
         team = await mrsession.get_team(mod.team_id)
         developer_string = ""
         number = 0
+        user_string = []
         for member in team.members:
             user = await member.get_user()
             number += 1
             role = member.role
             developer_string += f"``Developer {number}:`` **[{user.display_name}](https://modrinth.com/user/{user.id})** - **{role}**\n"
+            user_string += [user.id]
+        button_list = []
+        for list_users in user_string:
+            user = await mrsession.get_user(list_users)
+            button_list += Button(label=f"{user.display_name}", style=3)
+
 
         embed.title = f"{modtitle} - slug: {modslug}"
         embed.description = f"{moddescription}\n\n``Team ID.`` {mod.team_id}\n{developer_string}\n**__[VIEW MOD PAGE >](https://modrinth.com/mod/{mod_id})__**"
@@ -235,13 +245,20 @@ async def shutdown_bot(ctx):
 
 @bot.command()
 async def help(ctx):
+    mybuttons = [[
+        Button(label="Invite Me", style=5, url="https://discord.com/oauth2/authorize?client_id=860226500787961886&scope=bot&permissions=0"), 
+        Button(label="Modrinth", style=5, url="https://modrinth.com/")
+        ]]
     embed = discord.Embed()
     embed.title = "Help"
-    embed.description = "This bot is a 'proof of concept' on what you can do with modrinth.py.\nCheck out the [API wrapper here](https://github.com/FoundationGames/modrinth-py)\nIf you have any questions join the [help server](https://discord.gg/sDrqXQ5XMy)"
+    embed.description = "This bot is a 'proof of concept' on what you can do with modrinth.py.\n\nCheck out the [API Wrapper here](https://github.com/FoundationGames/modrinth-py).\nIf you have any questions join the [help server](https://discord.gg/sDrqXQ5XMy)."
     embed.add_field(name="Search for a Mod",value = "m!search ``<query>``")
-    embed.add_field(name="Mod Info",value = "m!mod ``<mod slug/id>``")
+    embed.add_field(name="Mod Info",value = "m!mod ``<mod id/slug>``")
     embed.add_field(name="User Info",value = "m!user ``<user id>``")
-    await ctx.send(embed=embed)
+    embed.add_field(name="User Info",value = "m!version ``<mod id/slug>``")
+    embed.set_footer(text="Developed by Cosmos#0001 and FoundationGames#6282")
+    await ctx.send(embed=embed,
+                    components=mybuttons)
 @bot.event
 async def on_command_error(ctx,error):
     if isinstance(error, commands.MaxConcurrencyReached):

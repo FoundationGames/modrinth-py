@@ -14,7 +14,6 @@ async def main():
 
         for version in versions:
             print(version.name)
-            print(version.changelog)
 
         print(version.date_published)
 

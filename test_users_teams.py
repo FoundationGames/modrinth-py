@@ -53,20 +53,6 @@ async def main():
             user_role = member.role
             print(f"User ID: {user_id} - User Role: {user_role}")
 
-    # Different ways of getting Info
-
-    for member_info in team.team_info:
-        user_id = member_info["user_id"]
-        user_role = member_info["role"]
-        print(f"User ID: {user_id} - User Role: {user_role}")
-
-    print("--- Or ---")
-
-    for member_info in team.members:
-        user_id = member_info.user_id
-        user_role = member_info.role
-        print(f"User ID: {user_id} - User Role: {user_role}")
-
 
 
 loop = asyncio.get_event_loop() 
